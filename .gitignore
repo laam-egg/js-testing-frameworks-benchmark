@@ -1,0 +1,11 @@
+node_modules/
+results/
+
+# Mocha
+test/
+
+# Jest
+__tests__/
+
+# Jasmine
+spec/
