@@ -1,7 +1,7 @@
 function asyncEmpty() {
     return new Promise((resolve) => {
         setTimeout(() => {
-            resolve();
+            resolve(true);
         }, 0);
     });
 }

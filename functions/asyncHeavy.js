@@ -1,7 +1,7 @@
 function asyncHeavy() {
     return new Promise((resolve) => {
         setTimeout(() => {
-            resolve();
+            resolve(true);
         }, 1000);
     });
 }
