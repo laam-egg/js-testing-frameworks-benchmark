@@ -1,4 +1,5 @@
 const functions = require("../functions");
+const { writeFileSync } = require("node:fs");
 
 module.exports = function (config) {
     let nestLevel = 1;
@@ -22,5 +23,6 @@ module.exports = function (config) {
     }
 
     src = config.file(imports + src);
-    return { src, desiredFileName: "deeplyNestedSuites" };
+    const fileName = config.fileName("deeplyNestedSuites");
+    writeFileSync(fileName, src);
 }

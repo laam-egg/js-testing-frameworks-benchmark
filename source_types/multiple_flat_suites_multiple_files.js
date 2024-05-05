@@ -6,14 +6,17 @@ module.exports = function (config) {
     let imports = "";
     for (const func of functions) {
         imports += `const { ${func.name} } = require("../functions/${func.name}.js");\n`;
-        src += func.isAsync ? (
+        src += "" + (func.isAsync ? (
             config.testCaseAsync(func.name, config.assertTrue(`await ${func.name}()`))
         ) : (
             config.testCaseSync(func.name, config.assertTrue(`${func.name}()`))
-        );
+        ));
     }
     src = config.testSuite("one large suite", src);
     src = config.file(imports + src);
-    const fileName = config.fileName("oneFlatSuite");
-    writeFileSync(fileName, src);
+
+    for (let i = 0; i < 3; ++i) {
+        const fileName = config.fileName(`flatSuite${i}`);
+        writeFileSync(fileName, src);
+    }
 }

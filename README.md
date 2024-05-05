@@ -28,5 +28,12 @@ npm run main 10
 More sample times, more accurate benchmark,
 but the script would take longer to run.
 
-Results are sorted in the order of
-increasing *mean time*, not total time.
+On the console: results are sorted in the
+order of increasing *mean time*, not total
+time.
+
+Finally, the script also exports the results
+into the `results/` folder. Currently, only
+HTML format is supported, and all the exported
+HTML files will reside in the `results/html`
+folder.

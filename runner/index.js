@@ -1,15 +1,13 @@
 const { exec } = require("child_process");
 const configs = require("../configs");
 const sourceTypes = require("../source_types");
-const { writeFileSync } = require("fs");
+const { HtmlExporter } = require("../exporters/HtmlExporter");
 
 async function runConfig(sampleTimes, config, sourceBuilder) {
     if (config.pre) await new Promise((resolve, reject) => exec(config.pre, (err) => err ? reject(err) : resolve()));
     
     // Write to file
-    const { src, desiredFileName } = sourceBuilder(config);
-    const fileName = config.fileName(desiredFileName);
-    writeFileSync(fileName, src);
+    sourceBuilder(config);
 
     // Run tests
     let meanTime = 0;
@@ -51,8 +49,15 @@ async function main() {
     ) || 3;
     console.log(`Sample times = ${sampleTimes}`);
     
+    const configNames = [];
+    for (const configName in configs) {
+        configNames.push(configName);
+    }
+
     const results = [];
+    const exporter = new HtmlExporter(configNames);
     for (const sourceType of sourceTypes) {
+        const currentSourceTypeDataToExport = [];
         for (const configName in configs) {
             const caseName = `${configName} (${sourceType.name})`;
             console.log(`Running ${caseName}`);
@@ -62,11 +67,19 @@ async function main() {
                 meanTime,
                 totalTime,
             });
+            currentSourceTypeDataToExport.push(meanTime);
         }
+        exporter.addSourceType(sourceType.name, currentSourceTypeDataToExport);
     }
 
     results.sort((a, b) => a.meanTime - b.meanTime);
     console.table(results);
+
+    console.log(`Rendering results as HTML webpages...`);
+    exporter.export({
+        args: "" + sampleTimes,
+    });
+    console.log(`Done at ${new Date()}.`);
 }
 
 main();

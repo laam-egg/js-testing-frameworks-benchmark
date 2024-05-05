@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Testing Frameworks Benchmark</title>
+</head>
+
+<body>
+    <h1>JS Testing Frameworks Benchmark</h1>
+    <p>
+        <a href="https://github.com/laam-egg/js-testing-frameworks-benchmark">GitHub repo here</a>.
+        Invocation: <code>npm run main <%= args %></code>
+    </p>
+    
+    <% for (const sourceType of dataOfAllSourceTypes) { %>
+        <input id="sourceType-<%= sourceType.sourceTypeName.replace(' ', '-') %>" type="hidden" value="<%= sourceType.data.join(", ") %>">
+    <% } %>
+
+    <input id="firstSourceTypeId" type="hidden" value="<%= dataOfAllSourceTypes[0].sourceTypeName.replace(' ', '-') %>">
+
+    <input id="configNames" type="hidden" value="<%= JSON.stringify(configNames) %>">
+
+    <input id="generatedAt" type="hidden" value="<%= Date.now() %>">
+
+    <main style="display: flex; flex-direction: column; align-items: center;">
+        <p class="offline" style="display: none;">This chart can't be viewed offline, sorry.</p>
+        <select id="sourceTypeSelection">
+        <% for (const sourceType of dataOfAllSourceTypes) { %>
+            <option value="<%= sourceType.sourceTypeName.replace(' ', '-') %>"><%= sourceType.sourceTypeName %></option>
+        <% } %>
+        </select>
+        <div style="position: relative; margin: auto; width: 80vw; height: 80vh; display: flex; justify-content: center;">
+            <canvas id="theChart"></canvas>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-autocolors"></script>
+
+    <script>
+        const configNames = JSON.parse(document.getElementById('configNames').value);
+        const firstSourceTypeId = document.getElementById('firstSourceTypeId').value;
+        const generatedAt = +document.getElementById('generatedAt').value;
+
+        sourceTypeSelection.addEventListener('change', onSourceTypeChange);
+        let autocolors;
+
+        let offlineGuard = (f) => f;
+        try {
+            Chart;
+            autocolors = window['chartjs-plugin-autocolors'];;
+            Chart.register(autocolors);
+        } catch (e) {
+            for (const e of document.getElementsByClassName("offline")) {
+                e.style.display = 'block';
+            }
+            offlineGuard = (f) => () => { };
+        }
+
+        function createChart() {
+            const ctx = document.getElementById("theChart");
+
+            return new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: configNames,
+                    datasets: [
+                        {
+                            label: 'Mean time, in seconds',
+                            data: getSourceTypeData(firstSourceTypeId),
+                        }
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: "JS Testing Frameworks Benchmark by Vũ Tùng Lâm, 2024",
+                        },
+                        subtitle: {
+                            display: true,
+                            text: [
+                                `Generated at ${new Date(generatedAt)}`,
+                                "Showing mean time, in seconds"
+                            ],
+                        },
+                        autocolors: {
+                            mode: 'data',
+                        },
+                        legend: {
+                            display: false,
+                        },
+                    }
+                }
+            });
+        }
+
+        const theChart = createChart();
+
+        function getSourceTypeData(sourceType) {
+            const elem = document.getElementById(`sourceType-${sourceType}`);
+            if (!elem) {
+                throw new Error(`No source type named ${sourceType}`);
+            }
+
+            if (!elem.value) {
+                throw new Error(`Source type ${sourceType} has no associated value`);
+            }
+
+            return ("" + elem.value).split(",").map((value) => +value.trim());
+        }
+
+        function switchToSourceType(sourceType) {
+            // Remove old data
+            theChart.data.datasets[0].data = getSourceTypeData(sourceType);
+            // Update
+            theChart.update();
+        }
+
+        function onSourceTypeChange(event) {
+            switchToSourceType(event.target.value);
+        }
+    </script>
+</body>
+
+</html>
