@@ -11,25 +11,33 @@
     <h1>JS Testing Frameworks Benchmark</h1>
     <p>
         <a href="https://github.com/laam-egg/js-testing-frameworks-benchmark">GitHub repo here</a>.
-        Invocation: <code>npm run main <%= args %></code>
+        Invocation: <code>npm run main 3</code>
     </p>
     
-    <% for (const sourceType of dataOfAllSourceTypes) { %>
-        <input id="sourceType-<%= sourceType.sourceTypeName.replace(' ', '-') %>" type="hidden" value="<%= sourceType.data.join(", ") %>">
-    <% } %>
+    
+        <input id="sourceType-deeply-nested suites" type="hidden" value="1.5, 1.5166666666666666, 1.5433333333333332, 1.6633333333333333, 4.1433333333333335, 2.3266666666666667">
+    
+        <input id="sourceType-one-flat suite" type="hidden" value="1.4533333333333331, 1.5166666666666666, 1.5333333333333332, 1.6466666666666665, 4.13, 2.3033333333333332">
+    
+        <input id="sourceType-multiple-flat suites, multiple test files" type="hidden" value="3.466666666666667, 2.533333333333333, 3.546666666666667, 1.6900000000000002, 10.39, 4.433333333333334">
+    
 
-    <input id="firstSourceTypeId" type="hidden" value="<%= dataOfAllSourceTypes[0].sourceTypeName.replace(' ', '-') %>">
+    <input id="firstSourceTypeId" type="hidden" value="deeply-nested suites">
 
-    <input id="configNames" type="hidden" value="<%= JSON.stringify(configNames) %>">
+    <input id="configNames" type="hidden" value="[&#34;jasmine_serial&#34;,&#34;jasmine_parallel&#34;,&#34;mocha_serial&#34;,&#34;mocha_parallel&#34;,&#34;jest_serial&#34;,&#34;jest_parallel&#34;]">
 
-    <input id="generatedAt" type="hidden" value="<%= Date.now() %>">
+    <input id="generatedAt" type="hidden" value="1714926340426">
 
     <main style="display: flex; flex-direction: column; align-items: center;">
         <p class="offline" style="display: none;">This chart can't be viewed offline, sorry.</p>
         <select id="sourceTypeSelection">
-        <% for (const sourceType of dataOfAllSourceTypes) { %>
-            <option value="<%= sourceType.sourceTypeName.replace(' ', '-') %>"><%= sourceType.sourceTypeName %></option>
-        <% } %>
+        
+            <option value="deeply-nested suites">deeply nested suites</option>
+        
+            <option value="one-flat suite">one flat suite</option>
+        
+            <option value="multiple-flat suites, multiple test files">multiple flat suites, multiple test files</option>
+        
         </select>
         <div style="position: relative; margin: auto; width: 80vw; height: 80vh; display: flex; justify-content: center;">
             <canvas id="theChart"></canvas>
