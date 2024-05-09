@@ -15,18 +15,18 @@
     </p>
     
     
-        <input id="sourceType-deeply-nested suites" type="hidden" value="1.4633333333333332, 1.5266666666666666, 1.5566666666666666, 1.6733333333333331, 4.206666666666667, 2.356666666666667">
+        <input id="sourceType-deeply-nested suites" type="hidden" value="1.4633333333333332, 1.5233333333333334, 1.5466666666666669, 1.66, 4.173333333333333, 2.3366666666666664">
     
-        <input id="sourceType-one-flat suite" type="hidden" value="1.4666666666666666, 1.53, 1.5533333333333335, 1.6833333333333333, 4.163333333333333, 2.3533333333333335">
+        <input id="sourceType-one-flat suite" type="hidden" value="1.4666666666666666, 1.5200000000000002, 1.54, 1.66, 4.13, 2.34">
     
-        <input id="sourceType-multiple-flat suites, multiple test files" type="hidden" value="3.483333333333333, 2.533333333333333, 3.5666666666666664, 1.71, 10.416666666666666, 4.456666666666667">
+        <input id="sourceType-multiple-flat suites, multiple test files" type="hidden" value="3.47, 2.533333333333333, 3.5499999999999994, 1.7033333333333331, 10.399999999999999, 4.47">
     
 
     <input id="firstSourceTypeId" type="hidden" value="deeply-nested suites">
 
     <input id="configNames" type="hidden" value="[&#34;jasmine_serial&#34;,&#34;jasmine_parallel&#34;,&#34;mocha_serial&#34;,&#34;mocha_parallel&#34;,&#34;jest_serial&#34;,&#34;jest_parallel&#34;]">
 
-    <input id="generatedAt" type="hidden" value="1714927282478">
+    <input id="generatedAt" type="hidden" value="1715245385945">
 
     <main style="display: flex; flex-direction: column; align-items: center;">
         <p class="offline" style="display: none;">This chart can't be viewed offline, sorry.</p>
@@ -55,19 +55,19 @@
         sourceTypeSelection.addEventListener('change', onSourceTypeChange);
         let autocolors;
 
-        let offlineGuard = (f) => f;
+        let functionUsingChart = (f) => f;
         try {
             Chart;
-            autocolors = window['chartjs-plugin-autocolors'];;
+            autocolors = window['chartjs-plugin-autocolors'];
             Chart.register(autocolors);
         } catch (e) {
             for (const e of document.getElementsByClassName("offline")) {
                 e.style.display = 'block';
             }
-            offlineGuard = (f) => () => { };
+            functionUsingChart = (f) => () => { };
         }
 
-        function createChart() {
+        const createChart = functionUsingChart(() => {
             const ctx = document.getElementById("theChart");
 
             return new Chart(ctx, {
@@ -105,7 +105,7 @@
                     }
                 }
             });
-        }
+        });
 
         const theChart = createChart();
 
@@ -122,12 +122,12 @@
             return ("" + elem.value).split(",").map((value) => +value.trim());
         }
 
-        function switchToSourceType(sourceType) {
+        const switchToSourceType = functionUsingChart((sourceType) => {
             // Remove old data
             theChart.data.datasets[0].data = getSourceTypeData(sourceType);
             // Update
             theChart.update();
-        }
+        });
 
         function onSourceTypeChange(event) {
             switchToSourceType(event.target.value);
