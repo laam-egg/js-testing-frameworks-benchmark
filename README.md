@@ -12,6 +12,10 @@ Borrowed from <https://vitalets.github.io/js-testrunners-bench/index.html>.
 
 ## Run on your own Machine
 
+Currently, only Linux platforms are supported.
+Install Node.js and npm first, then in the
+project's root directory, run:
+
 ```sh
 npm install
 npm run main
