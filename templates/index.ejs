@@ -47,19 +47,19 @@
         sourceTypeSelection.addEventListener('change', onSourceTypeChange);
         let autocolors;
 
-        let offlineGuard = (f) => f;
+        let functionUsingChart = (f) => f;
         try {
             Chart;
-            autocolors = window['chartjs-plugin-autocolors'];;
+            autocolors = window['chartjs-plugin-autocolors'];
             Chart.register(autocolors);
         } catch (e) {
             for (const e of document.getElementsByClassName("offline")) {
                 e.style.display = 'block';
             }
-            offlineGuard = (f) => () => { };
+            functionUsingChart = (f) => () => { };
         }
 
-        function createChart() {
+        const createChart = functionUsingChart(() => {
             const ctx = document.getElementById("theChart");
 
             return new Chart(ctx, {
@@ -97,7 +97,7 @@
                     }
                 }
             });
-        }
+        });
 
         const theChart = createChart();
 
@@ -114,12 +114,12 @@
             return ("" + elem.value).split(",").map((value) => +value.trim());
         }
 
-        function switchToSourceType(sourceType) {
+        const switchToSourceType = functionUsingChart((sourceType) => {
             // Remove old data
             theChart.data.datasets[0].data = getSourceTypeData(sourceType);
             // Update
             theChart.update();
-        }
+        });
 
         function onSourceTypeChange(event) {
             switchToSourceType(event.target.value);
