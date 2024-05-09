@@ -11,7 +11,11 @@
     <h1>JS Testing Frameworks Benchmark</h1>
     <p>
         <a href="https://github.com/laam-egg/js-testing-frameworks-benchmark">GitHub repo here</a>.
-        Invocation: <code>npm run main <%= args %></code>
+        Invocation: <code>npm run main <%= args %></code>.
+    </p>
+    <p>
+        To download information of the system on which the benchmark is run, click here:
+        <button onclick="downloadSysInfo()">Download System Information</button>
     </p>
     
     <% for (const sourceType of dataOfAllSourceTypes) { %>
@@ -23,6 +27,8 @@
     <input id="configNames" type="hidden" value="<%= JSON.stringify(configNames) %>">
 
     <input id="generatedAt" type="hidden" value="<%= Date.now() %>">
+
+    <input id="sysinfo" type="hidden" value="<%= JSON.stringify(sysinfo) %>">
 
     <main style="display: flex; flex-direction: column; align-items: center;">
         <p class="offline" style="display: none;">This chart can't be viewed offline, sorry.</p>
@@ -123,6 +129,19 @@
 
         function onSourceTypeChange(event) {
             switchToSourceType(event.target.value);
+        }
+
+        const _downloadSysInfo = (() => {
+            const str = JSON.parse(document.getElementById("sysinfo").value);
+            const blob = new Blob([str], { type: "text/plain" });
+            const fileUrl = URL.createObjectURL(blob);
+            const aElem = document.createElement("a");
+            aElem.setAttribute("href", fileUrl);
+            aElem.setAttribute("download", "sysinfo.txt");
+            return () => aElem.click();
+        })();
+        function downloadSysInfo() {
+            _downloadSysInfo();
         }
     </script>
 </body>

@@ -3,6 +3,15 @@ const configs = require("../configs");
 const sourceTypes = require("../source_types");
 const { HtmlExporter } = require("../exporters/HtmlExporter");
 
+async function getSysInfo() {
+    return await new Promise((resolve, reject) => {
+        exec("npx systeminformation info", (err, stdout, stderr) => {
+            if (err) return reject(err);
+            resolve(stdout);
+        });
+    });
+}
+
 async function runConfig(sampleTimes, config, sourceBuilder) {
     if (config.pre) await new Promise((resolve, reject) => exec(config.pre, (err) => err ? reject(err) : resolve()));
     
@@ -78,6 +87,7 @@ async function main() {
     console.log(`Rendering results as HTML webpages...`);
     exporter.export({
         args: "" + sampleTimes,
+        sysinfo: await getSysInfo(),
     });
     console.log(`Done at ${new Date()}.`);
 }

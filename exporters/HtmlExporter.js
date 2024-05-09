@@ -8,12 +8,7 @@ class HtmlExporter extends BaseExporter {
             encoding: 'utf-8',
             flag: 'r',
         });
-        const { args } = metadata;
-        const html = ejs.render(template, {
-            args,
-            configNames: this.configNames,
-            dataOfAllSourceTypes: this.data,
-        });
+        const html = ejs.render(template, metadata);
 
         const basePath = __dirname + "/../results/html/";
         mkdirSync(basePath, { recursive: true });

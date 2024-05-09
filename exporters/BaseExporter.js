@@ -42,7 +42,15 @@ class BaseExporter {
         throw new Error("Export feature not implemented");
     }
 
-    export(metadata) {
+    export(additionalData) {
+        const metadata = Object.assign(
+            {},
+            additionalData,
+            {
+                configNames: this.configNames,
+                dataOfAllSourceTypes: this.data,
+            }
+        );
         this.doExport(metadata);
     }
 }
